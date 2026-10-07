@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Digitalisasi Pembelajaran - SMA Maranatha Pontianak</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <header>
+      <div class="backdrop" id="backdrop"></div>
+      <div class="bar">
+        <img
+          class="logo"
+          src="assets/Logo.png"
+          alt="Logo SMA Maranatha"
+          onerror="this.style.visibility = 'hidden'"
+        />
+        <span class="brand" data-go="beranda">Digitalisasi Pembelajaran</span>
+        <nav id="nav">
+          <a data-go="materi">Materi</a>
+          <a data-go="tugas">Tugas</a>
+          <a data-go="pretest">Pretest</a>
+          <a data-go="postest">Postest</a>
+          <a href="admin.html" class="admin-link">Portal Admin</a>
+        </nav>
+        <button class="burger" id="burger" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <!-- BERANDA -->
+      <div class="page on" id="beranda">
+        <section class="hero">
+          <div class="hero-box reveal">
+            <div class="bar-accent"></div>
+            <h1>Pengimbasan digitalisasi pembelajaran</h1>
+            <h3>Portal Evaluasi Pelatihan Digitalisasi pembelajaran</h3>
+            <p>
+              Belajar, berlatih, untuk meningkatkan kemampuan digitalisasi
+              pendidik.
+            </p>
+            <a class="btn" data-go="pretest">Mulai Pretest</a>
+          </div>
+        </section>
+        <section class="section g1">
+          <div class="wrap">
+            <h2 class="reveal">Materi Pelatihan dan Pengumpulan Tugas</h2>
+            <div class="grid">
+              <div class="card feat reveal">
+                <div class="num">01</div>
+                <h3>Materi</h3>
+                <p>
+                  Baca materi pelatihan dalam format PDF, PPT, atau Word
+                  langsung di website.
+                </p>
+              </div>
+              <div class="card feat reveal">
+                <div class="num">02</div>
+                <h3>Tugas</h3>
+                <p>Unggah hasil pekerjaan di sini.</p>
+              </div>
+              <div class="card feat reveal">
+                <div class="num">03</div>
+                <h3>Pretest/Postest</h3>
+                <p>Selamat Mengerjakan Pretest dan Posttest.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- MATERI -->
+      <div class="page" id="materi">
+        <section class="section g2">
+          <div class="wrap">
+            <div class="eyebrow reveal">Materi</div>
+            <h2 class="reveal">Materi Pelatihan</h2>
+            <p class="lead reveal">
+              Pilih materi lalu klik "Buka" untuk membacanya di halaman ini.
+            </p>
+            <div class="card reveal">
+              <div id="listMateri"><p class="muted">Memuat materi...</p></div>
+              <iframe
+                id="viewer"
+                class="viewer"
+                style="display: none"
+                title="Penampil materi"
+              ></iframe>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- TUGAS -->
+      <div class="page" id="tugas">
+        <section class="section g3">
+          <div class="wrap">
+            <div class="eyebrow reveal">Tugas</div>
+            <h2 class="reveal">Kumpulkan Tugas</h2>
+            <p class="lead reveal">
+              Tanpa login. Format PDF, PPT/PPTX, atau DOC/DOCX, maksimal 20 MB.
+            </p>
+            <div class="card reveal">
+              <label class="f" for="tNama" style="margin-top: 0"
+                >Nama lengkap</label
+              >
+              <input type="text" id="tNama" placeholder="Masukkan nama kamu" />
+              <label class="f" for="tFile">File tugas</label>
+              <input
+                type="file"
+                id="tFile"
+                accept=".pdf,.ppt,.pptx,.doc,.docx"
+              />
+              <br /><br /><button class="btn sage" id="btnKirim">
+                Kirim Tugas
+              </button>
+              <div class="msg" id="tMsg"></div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- PRETEST -->
+      <div class="page" id="pretest">
+        <section class="section g4">
+          <div class="wrap">
+            <div class="eyebrow reveal">Evaluasi</div>
+            <h2 class="reveal">Pretest</h2>
+            <p class="lead reveal">
+              25 soal Pretest. Jawab semua soal, lalu klik kirim untuk melihat
+              skormu.
+            </p>
+            <div class="card reveal">
+              <label class="f" for="namaPretest" style="margin-top: 0"
+                >Nama lengkap</label
+              >
+              <input
+                type="text"
+                id="namaPretest"
+                placeholder="Masukkan nama kamu"
+              />
+              <div id="soalPretest"></div>
+              <button class="btn" id="btnPretest">Kirim Jawaban</button>
+              <div class="msg" id="msgPretest"></div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- POSTEST (dibuka oleh admin) -->
+      <div class="page" id="postest">
+        <section class="section g3">
+          <div class="wrap">
+            <div class="eyebrow reveal">Evaluasi</div>
+            <h2 class="reveal">Postest</h2>
+            <div class="card reveal" id="postestLock">
+              <h3>Postest belum dibuka</h3>
+              <p class="muted" id="lockMsg">
+                Postest akan dibuka oleh admin setelah sesi pelatihan selesai.
+              </p>
+              <br /><button class="btn ghost" id="btnCekPostest">
+                Periksa Lagi
+              </button>
+            </div>
+            <div class="hidden" id="postestForm">
+              <p class="lead">
+                25 soal Posttest. Jawab semua soal, lalu klik kirim untuk
+                melihat skor.
+              </p>
+              <div class="card">
+                <label class="f" for="namaPostest" style="margin-top: 0"
+                  >Nama lengkap</label
+                >
+                <input
+                  type="text"
+                  id="namaPostest"
+                  placeholder="Masukkan nama kamu"
+                />
+                <div id="soalPostest"></div>
+                <button class="btn" id="btnPostest">Kirim Jawaban</button>
+                <div class="msg" id="msgPostest"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- LOKASI: konten terakhir -->
+    <section class="section lokasi" id="lokasi">
+      <div class="wrap">
+        <div class="eyebrow reveal">Lokasi</div>
+        <h2 class="reveal">Portal Pelatihan Digitalisasi Pembelajaran</h2>
+        <p class="lead reveal">SMA Kristen Maranatha Pontianak</p>
+        <div class="loc reveal">
+          <div class="card">
+            <h3>Alamat</h3>
+            <p class="muted">
+              Jl. Gusti Situt Mahmud No.113, Siantan Tengah, Kecamatan Pontianak
+              Utara<br />Kota Pontianak, Kalimantan Barat
+            </p>
+            <div>
+              <a
+                class="btn"
+                href="https://maps.app.goo.gl/aYkg95AwtdfZK8V16"
+                target="_blank"
+                rel="noopener"
+                >Buka di Google Maps</a
+              >
+            </div>
+          </div>
+          <iframe
+            title="Peta lokasi SMA Maranatha Pontianak"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            src="https://www.google.com/maps?q=SMA+Maranatha+Pontianak&output=embed"
+          ></iframe>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      © 2026 <b>SMA Kristen Maranatha Pontianak</b> &nbsp;·&nbsp;
+      <a
+        href="admin.html"
+        style="color: inherit; opacity: 0.7; font-size: 0.85rem"
+        >Login Admin</a
+      >
+    </footer>
+
+    <!-- Urutan penting: library → config → modul -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/soal_pretest.js"></script>
+    <script src="js/tes.js"></script>
+  </body>
+</html>
