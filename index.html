@@ -9,7 +9,7 @@
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/style.css?v=4" />
   </head>
   <body>
     <header>
@@ -22,8 +22,8 @@
           onerror="this.style.visibility = 'hidden'"
         />
         <span class="brand" data-go="beranda"
-          >Digitalisasi <span class="pm">Pembelajaran</span>
-        </span>
+          >Digitalisasi <span class="pm"> Pembelajaran </span></span
+        >
         <nav id="nav">
           <a data-go="materi">Materi</a>
           <a data-go="tugas">Tugas</a>
@@ -102,6 +102,14 @@
                     >
                       Layar Penuh
                     </button>
+                    <a
+                      class="btn ghost sm"
+                      id="btnTab"
+                      href="#"
+                      target="_blank"
+                      rel="noopener"
+                      >Tab Baru</a
+                    >
                     <a class="btn sm" id="btnUnduh" href="#">Unduh</a>
                   </div>
                 </div>
@@ -111,6 +119,9 @@
                   title="Penampil materi"
                   allowfullscreen
                 ></iframe>
+                <p class="muted penampil-catatan">
+                  Materi tidak tampil? Klik <b>Tab Baru</b> atau <b>Unduh</b>.
+                </p>
               </div>
             </div>
           </div>
@@ -250,10 +261,9 @@
 
     <!-- Urutan penting: library → config → modul -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
-    <script src="js/config.js"></script>
-    <script src="js/app.js"></script>
-    <script src="js/soal_pretest.js"></script>
-    <script src="js/tes.js"></script>
-    <script src="js/penampil.js"></script>
+    <script src="js/config.js?v=4"></script>
+    <script src="js/app.js?v=4"></script>
+    <script src="js/soal_pretest.js?v=4"></script>
+    <script src="js/tes.js?v=4"></script>
   </body>
 </html>
