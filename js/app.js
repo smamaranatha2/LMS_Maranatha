@@ -8,12 +8,15 @@ const say = (el, text, ok) => { el.textContent = text; el.className = 'msg ' + (
 /* ---------- Animasi muncul saat scroll ---------- */
 const io = new IntersectionObserver(entries => entries.forEach(e => {
   if (e.isIntersecting) { e.target.classList.add('show'); io.unobserve(e.target); }
-}), { threshold: .12 });
+}), { threshold: 0, rootMargin: '0px 0px -6% 0px' });   // threshold 0: elemen setinggi apa pun tetap muncul
 const observe = () => $$('.reveal:not(.show)').forEach(el => io.observe(el));
 
 /* ---------- Navigasi antar halaman ---------- */
 function go(id) {
+  const sama = $('#' + id).classList.contains('on');       // sudah di halaman ini?
   $$('.page').forEach(p => p.classList.toggle('on', p.id === id));
+  // putar ulang animasi naik setiap halaman dibuka kembali (termasuk Beranda & Lokasi)
+  if (!sama) $$('#' + id + ' .reveal, #lokasi .reveal').forEach(el => el.classList.remove('show'));
   $$('nav a').forEach(a => a.classList.toggle('on', a.dataset.go === id));
   tutupMenu();
   $('#lokasi').style.display = id === 'beranda' ? '' : 'none';   // peta hanya di beranda
@@ -38,28 +41,68 @@ $('#burger').onclick = () => {
 $('#backdrop').onclick = tutupMenu;
 document.addEventListener('keydown', e => { if (e.key === 'Escape') tutupMenu(); });
 
-/* ---------- Materi ---------- */
+/* ---------- Materi: penampil Google Viewer, layar penuh, unduh ---------- */
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const namaFile = (judul, tipe) => String(judul).replace(/[\\/:*?"<>|]+/g, '').trim() + '.' + tipe;
+// Supabase Storage: parameter ?download=nama membuat browser menyimpan file ke perangkat
+const urlUnduh = (url, nama) => url + (url.includes('?') ? '&' : '?') + 'download=' + encodeURIComponent(nama);
+const urlGoogle = (url, embed) => 'https://docs.google.com/gview?' + (embed ? 'embedded=true&' : '') + 'url=' + encodeURIComponent(url);
+
 async function loadMateri() {
   const box = $('#listMateri');
   if (!db) { box.innerHTML = '<p class="muted">Supabase belum dikonfigurasi (lihat js/config.js).</p>'; return; }
   const { data, error } = await db.from('materi').select('*').order('id');
-  if (error || !data.length) { box.innerHTML = '<p class="muted">Belum ada materi.</p>'; return; }
+  if (error) { box.innerHTML = `<p class="muted">Gagal memuat materi: ${esc(error.message)}</p>`; return; }
+  if (!data.length) { box.innerHTML = '<p class="muted">Belum ada materi.</p>'; return; }
 
-  box.innerHTML = data.map(m => `
-    <div class="mat">
-      <div><b>${m.judul}</b><br><span class="badge">${(m.tipe || '').toUpperCase()}</span></div>
-      <button class="btn ghost" data-url="${m.file_url}" data-tipe="${m.tipe}">Buka</button>
-    </div>`).join('');
-
-  $$('#listMateri .btn').forEach(b => b.onclick = () => {
-    const v = $('#viewer'), url = b.dataset.url;
-    v.src = b.dataset.tipe === 'pdf'
-      ? url
-      : 'https://view.officeapps.live.com/op/embed.aspx?src=' + encodeURIComponent(url);
-    v.style.display = 'block';
-    v.scrollIntoView({ behavior: 'smooth' });
-  });
+  box.innerHTML = data.map(m => {
+    const tipe = m.tipe || 'pdf', nama = namaFile(m.judul, tipe);
+    return `<div class="mat">
+      <div><b>${esc(m.judul)}</b><br><span class="badge">${esc(tipe).toUpperCase()}</span></div>
+      <div class="aksi">
+        <button class="btn ghost sm" data-url="${esc(m.file_url)}" data-judul="${esc(m.judul)}" data-tipe="${esc(tipe)}">Buka</button>
+        <a class="btn sm" href="${esc(urlUnduh(m.file_url, nama))}" download="${esc(nama)}">Unduh</a>
+      </div></div>`;
+  }).join('');
+  $$('#listMateri button[data-url]').forEach(b => b.onclick = () => bukaMateri(b));
 }
+
+function bukaMateri(b) {
+  const url = b.dataset.url, nama = namaFile(b.dataset.judul, b.dataset.tipe), wrap = $('#penampil');
+  $('#penampilJudul').textContent = b.dataset.judul;
+  $('#viewer').src = urlGoogle(url, true);
+  $('#btnUnduh').href = urlUnduh(url, nama);
+  $('#btnUnduh').setAttribute('download', nama);
+  $('#btnTab').href = urlGoogle(url, false);
+  wrap.classList.remove('hidden');
+  wrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+/* Layar penuh (cadangan kelas .penuh untuk browser tanpa Fullscreen API, mis. iPhone) */
+const fsEl = () => document.fullscreenElement || document.webkitFullscreenElement;
+const layarPenuhAktif = () => !!fsEl() || $('#penampil').classList.contains('penuh');
+function sinkronLayarPenuh() {
+  $('#btnLayarPenuh').textContent = layarPenuhAktif() ? 'Keluar Layar Penuh' : 'Layar Penuh';
+  document.body.style.overflow = $('#penampil').classList.contains('penuh') ? 'hidden' : '';
+}
+$('#btnLayarPenuh').onclick = () => {
+  const wrap = $('#penampil');
+  if (layarPenuhAktif()) {
+    if (fsEl()) (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+    wrap.classList.remove('penuh');
+  } else {
+    const req = wrap.requestFullscreen || wrap.webkitRequestFullscreen;
+    if (req) {
+      const r = req.call(wrap);
+      if (r && r.catch) r.catch(() => { wrap.classList.add('penuh'); sinkronLayarPenuh(); });
+    } else wrap.classList.add('penuh');
+  }
+  sinkronLayarPenuh();
+};
+['fullscreenchange', 'webkitfullscreenchange'].forEach(ev => document.addEventListener(ev, sinkronLayarPenuh));
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && $('#penampil').classList.contains('penuh')) { $('#penampil').classList.remove('penuh'); sinkronLayarPenuh(); }
+});
 
 /* ---------- Tugas (tanpa login) ---------- */
 $('#btnKirim').onclick = async () => {
