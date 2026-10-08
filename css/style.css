@@ -4,7 +4,7 @@
 :root {
   /* Gambar latar (ubah nama file / transparansi di sini) */
   --bg-image: url("../assets/Latar.png");
-  --bg-opacity: 0.1; /* 0 = hilang, 1 = penuh */
+  --bg-opacity: 1; /* 0 = hilang, 1 = penuh */
 
   /* Palet */
   --dark: #4a210a; /* cokelat tua: footer, lokasi */
