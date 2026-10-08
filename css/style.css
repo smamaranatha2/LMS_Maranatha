@@ -4,7 +4,7 @@
 :root {
   /* Gambar latar (ubah nama file / transparansi di sini) */
   --bg-image: url("../assets/Latar.png");
-  --bg-opacity: 1; /* 0 = hilang, 1 = penuh */
+  --bg-opacity: 0.1; /* 0 = hilang, 1 = penuh */
 
   /* Palet */
   --dark: #4a210a; /* cokelat tua: footer, lokasi */
@@ -683,4 +683,29 @@ nav a.admin-link:hover {
   .mat {
     flex-wrap: wrap;
   }
+}
+
+/* Animasi kotak utama Beranda: murni CSS, ikut diputar ulang setiap Beranda ditampilkan */
+@keyframes naik {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+#beranda .hero-box.reveal {
+  opacity: 1;
+  transform: none;
+  transition: none;
+  animation: naik 0.9s ease both;
+}
+.penampil-catatan {
+  font-size: 0.82rem;
+  margin: 0;
+  padding: 8px 14px;
+  background: #fff;
+  border-top: 1px solid var(--line);
 }
